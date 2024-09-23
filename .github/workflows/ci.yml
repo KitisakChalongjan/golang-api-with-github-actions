@@ -1,0 +1,34 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # CI runs when code is pushed to the main branch
+    pull_request:
+      branches:
+        - main  # CI runs when a PR is created/updated on the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Run on Ubuntu
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'  # Use the Go version you're using
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build the application
+        run: go build -v
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .

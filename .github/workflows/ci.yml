@@ -5,10 +5,14 @@ on:
     branches:
       - main
       - dev
+    pull_request:
+      branches:
+        - main
 
 jobs:
   build:
-    runs-on: ubuntu-latests
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

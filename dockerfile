@@ -20,7 +20,7 @@ WORKDIR /root/
 COPY --from=builder /app/golang-api .
 
 # Expose the port your service uses (if necessary)
-EXPOSE 8080
+EXPOSE 8000
 
 # Command to run the service
 CMD ["./golang-api"]

@@ -43,6 +43,11 @@ jobs:
         run: |
           docker build -t golang-api-image:latest .
 
+      - name: Stop and Remove Existing Container
+        run: |
+          docker stop golang-api || true
+          docker rm golang-api || true
+
       - name: Run Docker container
         run: |
           docker run -d --name golang-api -p 8000:8000 golang-api-image:latest

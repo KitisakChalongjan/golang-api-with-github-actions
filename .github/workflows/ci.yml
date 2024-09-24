@@ -51,6 +51,4 @@ jobs:
         run: |
           docker tag golang-api-image:latest ${{ secrets.DOCKER_USERNAME }}/golang-api-image:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/golang-api-image:latest
-
-      # - name: Build Docker image
-      #   run: docker build -t myapp:${{ github.sha }} .
+          

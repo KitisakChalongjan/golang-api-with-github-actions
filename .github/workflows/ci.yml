@@ -41,16 +41,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t golang-api:latest .
+          docker build -t golang-api-image:latest .
 
       - name: Run Docker container
         run: |
-          docker run -d --name my-golang-app -p 8000:8000 golang-api:latest
+          docker run -d --name golang-api -p 8000:8000 golang-api-image:latest
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag golang-api:latest ${{ secrets.DOCKER_USERNAME }}/golang-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/golang-api:latest
+          docker tag golang-api-image:latest ${{ secrets.DOCKER_USERNAME }}/golang-api-image:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/golang-api-image:latest
 
       # - name: Build Docker image
       #   run: docker build -t myapp:${{ github.sha }} .

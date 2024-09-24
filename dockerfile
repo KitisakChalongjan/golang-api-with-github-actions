@@ -10,17 +10,17 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o myapp .
+RUN go build -o golang-api .
 
 # Step 2: Create a lightweight image to run the service
 FROM alpine:latest
 WORKDIR /root/
 
 # Copy the compiled Go binary from the builder image
-COPY --from=builder /app/myapp .
+COPY --from=builder /app/golang-api .
 
 # Expose the port your service uses (if necessary)
 EXPOSE 8080
 
 # Command to run the service
-CMD ["./myapp"]
+CMD ["./golang-api"]

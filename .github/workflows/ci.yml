@@ -45,8 +45,8 @@ jobs:
 
       - name: Stop and Remove Existing Container
         run: |
-          docker stop golang-api || true
-          docker rm golang-api || true
+          docker ps -q -f name=golang-api | ForEach-Object { docker stop $_ }
+          docker ps -aq -f name=golang-api | ForEach-Object { docker rm $_ }
 
       - name: Run Docker container
         run: |

@@ -78,7 +78,7 @@ func backgroundTask(modbusData *ModbusData, machine1IP, machine1Port, machine2IP
 			log.Printf("Error reading from machine 2: %v", err2)
 		}
 
-		fmt.Printf("Data1 : %d\nData2 : %d\n", data1, data2)
+		// fmt.Printf("Data1 : %d\nData2 : %d\n", data1, data2)
 
 		modbusData.mux.Lock()
 		modbusData.modbus1Data = data1

@@ -50,7 +50,7 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d --name golang-api -p 8000:8000 golang-api-image:latest
+          docker run -d --network host --name golang-api -p 8000:8000 golang-api-image:latest
 
       - name: Push Docker image to Docker Hub
         run: |

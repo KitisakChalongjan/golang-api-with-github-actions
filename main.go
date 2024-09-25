@@ -10,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goburrow/modbus"
-
 )
 
 type ModbusData struct {
@@ -23,10 +22,10 @@ func main() {
 
 	log.Println("Starting the application...")
 
-	machine1IP := "192.168.1.33"
+	machine1IP := "172.17.0.1"
 	machine1Port := "501"
 
-	machine2IP := "192.168.1.33"
+	machine2IP := "172.17.0.1"
 	machine2Port := "502"
 
 	modbusData := &ModbusData{}

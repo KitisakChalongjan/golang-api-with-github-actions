@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goburrow/modbus"
+
 )
 
 type ModbusData struct {
@@ -59,8 +60,8 @@ func getModbusDataHandler(modbusData *ModbusData) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"modbus1_data": fmt.Sprintf("%x", data1),
-			"modbus2_data": fmt.Sprintf("%x", data2),
+			"modbus1_data": fmt.Sprintf("%d", data1),
+			"modbus2_data": fmt.Sprintf("%d", data2),
 		})
 	}
 }

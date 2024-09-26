@@ -37,7 +37,7 @@ jobs:
         run: docker save golang-api-image:latest | gzip > golang-api-image.tar.gz
 
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: golang-api-image
           path: golang-api-image.tar.gz
@@ -67,7 +67,7 @@ jobs:
     needs: test
     steps:
       - name: Download Docker image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: golang-api-image
 

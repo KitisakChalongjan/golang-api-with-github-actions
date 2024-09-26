@@ -26,22 +26,6 @@ jobs:
       - name: Build the application
         run: go build -v
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Docker image
-        run: |
-          docker build -t golang-api-image:latest .
-
-      - name: Save Docker image as artifact
-        run: docker save golang-api-image:latest | gzip > golang-api-image.tar.gz
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: golang-api-image
-          path: golang-api-image.tar.gz
-
   # Job 2: Test the application
   test:
     runs-on: self-hosted
@@ -66,14 +50,10 @@ jobs:
     runs-on: self-hosted
     needs: test
     steps:
-      - name: Download Docker image artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: golang-api-image
-
-      - name: Load Docker image
-        run: gunzip -c golang-api-image.tar.gz | docker load
-
+      - name: Build Docker image
+        run: |
+          docker build -t golang-api-image:latest .
+          
       - name: Stop and Remove Existing Container
         run: |
           docker ps -q -f name=golang-api | ForEach-Object { docker stop $_ }

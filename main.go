@@ -12,7 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goburrow/modbus"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 )
 
 type ModbusData struct {
@@ -25,10 +25,10 @@ func main() {
 
 	log.Println("Starting the application...")
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatalf("Error loading .env file: %v", err)
+	// }
 
 	appPort := os.Getenv("APP_PORT")
 

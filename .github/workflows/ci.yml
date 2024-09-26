@@ -44,7 +44,18 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d --name golang-api -p 8000:8000 golang-api-image:latest
+          docker run -d --name golang-api -p 8000:8000 \
+            -e APP_PORT=8000 \
+            -e USE_MODSIM=true \
+            -e MACHINE_1_IP=192.168.1.33 \
+            -e MACHINE_1_PORT=501 \
+            -e MACHINE_1_START_ADDRESS=100 \
+            -e MACHINE_1_READ_COUNT=10 \
+            -e MACHINE_2_IP=192.168.1.33 \
+            -e MACHINE_2_PORT=502 \
+            -e MACHINE_2_START_ADDRESS=100 \
+            -e MACHINE_2_READ_COUNT=10 \
+           golang-api-image:latest
           
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v2

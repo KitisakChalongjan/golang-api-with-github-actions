@@ -12,7 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goburrow/modbus"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 type ModbusData struct {
@@ -25,10 +25,17 @@ func main() {
 
 	log.Println("Starting the application...")
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file: %v", err)
-	// }
+	_, err := os.Stat(".env")
+	if err == nil {
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("Error loading .env file: %v", err)
+		}
+
+		log.Println(".env file loaded")
+	} else {
+		log.Println("No .env file found, using docker environment variables")
+	}
 
 	appPort := os.Getenv("APP_PORT")
 
@@ -71,6 +78,7 @@ func getModbusDataHandler(modbusData *ModbusData) gin.HandlerFunc {
 
 func backgroundTask(modbusData *ModbusData) {
 
+	// get env
 	machine1IP := os.Getenv("MACHINE_1_IP")
 	machine1Port := os.Getenv("MACHINE_1_PORT")
 	machine1Start, err := strconv.Atoi(os.Getenv("MACHINE_1_START_ADDRESS"))
@@ -97,6 +105,13 @@ func backgroundTask(modbusData *ModbusData) {
 		return
 	}
 
+	isUseModbus, err := strconv.ParseBool(os.Getenv("USE_MODSIM"))
+	if err != nil {
+		log.Printf("Error convert \"isUseModbus\" to bool")
+		return
+	}
+
+	// create modbus handler
 	handler1, err1 := createModbusHandler(machine1IP, machine1Port)
 	if err1 != nil {
 		log.Printf("Error creating handler for machine 1: %v", err1)
@@ -111,22 +126,19 @@ func backgroundTask(modbusData *ModbusData) {
 	}
 	defer handler2.Close()
 
+	// create modbus client
 	client1 := modbus.NewClient(handler1)
 	client2 := modbus.NewClient(handler2)
-
-	isUseModbus, err := strconv.ParseBool(os.Getenv("USE_MODSIM"))
-	if err != nil {
-		log.Printf("Error convert isUseModbus to bool")
-		return
-	}
 
 	if isUseModbus {
 		machine1Start -= 1
 		machine2Start -= 1
 	}
 
+	// background task loop
 	for {
 
+		// read modbus data
 		data1, err1 := readModbusData(client1, machine1Start, machine1Count)
 		if err1 != nil {
 			log.Printf("Error reading from machine 1: %v", err1)
@@ -137,16 +149,19 @@ func backgroundTask(modbusData *ModbusData) {
 			log.Printf("Error reading from machine 2: %v", err2)
 		}
 
-		fmt.Printf("Data1 : %d\nData2 : %d\n", data1, data2)
+		// fmt.Printf("Data1 : %d\nData2 : %d\n", data1, data2)
 
+		// update data to modbusData
 		modbusData.mux.Lock()
 		modbusData.modbus1Data = data1
 		modbusData.modbus2Data = data2
 		modbusData.mux.Unlock()
 
+		// delayed
 		time.Sleep(5 * time.Second)
 	}
 }
+
 func createModbusHandler(ip, port string) (*modbus.TCPClientHandler, error) {
 	handler := modbus.NewTCPClientHandler(fmt.Sprintf("%s:%s", ip, port))
 	handler.Timeout = 10 * time.Second
